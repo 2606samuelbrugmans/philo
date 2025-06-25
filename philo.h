@@ -29,3 +29,15 @@ typedef struct s_philo {
     unsigned long long last_ate_time;
     t_shared *shared;
 } t_philo;
+int all_ate(t_philo *philos);
+int monitor(void *arg);
+int process(t_philo *philo);
+void even_eating(t_philo philo);
+void odd_eating(t_philo philo);
+int routine(void *arg);
+int init(char **argv, t_philo *philos, t_shared *shared);
+void grab_left_fork(t_philo philo);
+void grab_right_fork(t_philo philo);
+void ft_sleep(t_philo philo, char *type);
+unsigned long long get_time_ms(void);
+

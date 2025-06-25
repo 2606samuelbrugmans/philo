@@ -3,14 +3,14 @@ int all_ate(t_philo *philos)
 {
     int i = 0;
     int full_count = 0;
-    pthread_mutex_lock(philo->shared->full_mutex);
+    pthread_mutex_lock(philos->shared->full_mutex);
     while (i < philos->shared->number_philos)
     {
         if (philos[i].full)
             full_count++;
         i++;
     }
-    pthread_mutex_unlock(philo->shared->full_mutex);
+    pthread_mutex_unlock(philos->shared->full_mutex);
 
     return (full_count == philos->shared->number_philos);
 }
@@ -81,24 +81,36 @@ void    even_eating(t_philo philo)
     grab_right_Fork(philo);
     ft_sleep(philo, "eat");
     philo.shared->forks[philo.id] = 0;
-    if (philo.id != philo.shared->number_philos - 1)
-        philo.shared->forks[philo.id + 1] = 0;
-    else
-        philo.shared->forks[0] = 0;
-    pthread_mutex_unlock(philo.shared->fork_mutexes[philo.id + 1]);
     pthread_mutex_unlock(philo.shared->fork_mutexes[philo.id]);
+    if (philo.id != philo.shared->number_philos - 1)
+    {
+        philo.shared->forks[philo.id + 1] = 0;
+        pthread_mutex_unlock(philo.shared->fork_mutexes[philo.id + 1]);
+    }
+    else
+    {
+        philo.shared->forks[0] = 0;
+        pthread_mutex_unlock(philo.shared->fork_mutexes[0]);
+    }
+
+
 }
 void    odd_eating(t_philo philo)
 {
     grab_right_Fork(philo);
     grab_left_fork(philo);
     ft_sleep(philo, "eat");
-    philo.shared->forks[philo.id] = 0;
     if (philo.id != philo.shared->number_philos - 1)
+    {
         philo.shared->forks[philo.id + 1] = 0;
+        pthread_mutex_unlock(philo.shared->fork_mutexes[philo.id + 1]);
+    }
     else
+    {
         philo.shared->forks[0] = 0;
-    pthread_mutex_unlock(philo.shared->fork_mutexes[philo.id + 1]);
+        pthread_mutex_unlock(philo.shared->fork_mutexes[0]);
+    }
+    philo.shared->forks[philo.id] = 0;
     pthread_mutex_unlock(philo.shared->fork_mutexes[philo.id]);
 }
 
@@ -117,7 +129,7 @@ int     routine(void *arg)
         if (philo->id % 2 == 1)
             odd_eating(*philo);
         num_eating++;
-        ft_sleep(philo, "sleep");
+        ft_sleep(*philo, "sleep");
 
     }
     pthread_mutex_lock(philo->shared->full_mutex);
@@ -159,6 +171,9 @@ int     init(char **argv, t_philo *philos, t_shared *shared)
     {
         philos[index].id = index;
         philos[index].shared = shared;
+        philos[index].full = 0;
+        philos[index].last_ate_time = get_time_ms();
+        index++;
     }
 
     return (0); // Success
@@ -169,15 +184,11 @@ int main(int argc, char **argv)
    t_philo *philosoph;
    t_shared shared;
 
-    if (argc == 4 || argc == 5)
+    if (argc != 4 && argc != 5)
     {
         write(2, "number of arguments is inadequate", 14);
         return (-1)
     }
     init(argv, philosoph, &shared);
     process(philosoph);
-
-
-    
-
 }
