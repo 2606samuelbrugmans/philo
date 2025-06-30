@@ -1,11 +1,11 @@
+#ifndef PHILO_H
+#define PHILO_H
+
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include <sys/time.h>
-
-
-
-
 
 typedef struct s_shared {
 
@@ -37,17 +37,19 @@ int should_stop(t_philo *philo);
 int anybody_die(t_philo *philos);
 
 int all_ate(t_philo *philos);
-int monitor(void *arg);
+void *monitor(void *arg);
 int process(t_philo *philo);
 void even_eating(t_philo *philo);
 void odd_eating(t_philo *philo);
-int routine(void *arg);
+void *routine(void *arg);
 int init_shared(char **argv, t_shared *shared);
-int init_philos(char **argv, t_philo **philos, t_shared *shared);
-int cleanup(t_philo *philos, t_shared *shared);
+int init_philos(t_philo **philos, t_shared *shared);
+int cleanup(t_shared *shared, t_philo *philos);
 
 void grab_left_fork(t_philo *philo);
 void grab_right_fork(t_philo *philo);
 void ft_sleep(t_philo *philo, char *type);
 unsigned long long get_time_ms(void);
+
+#endif // PHILO_H
 

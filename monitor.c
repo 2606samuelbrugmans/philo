@@ -1,7 +1,7 @@
 #include "philo.h"
 int anybody_die(t_philo *philos)
 {
-    int time;
+    unsigned long long time;
     int index;
 
     time = get_time_ms();
@@ -9,7 +9,7 @@ int anybody_die(t_philo *philos)
     while(index < philos->shared->number_philos)
     {
         pthread_mutex_lock(&philos[index].last_ate_protec);
-        if (time - philos[index].last_ate_time >= philos->shared->time_to_die)
+        if (time - philos[index].last_ate_time >= (unsigned long long)philos->shared->time_to_die)
         {
             pthread_mutex_unlock(&philos[index].last_ate_protec);
             time -= philos->shared->start_time;
@@ -29,23 +29,20 @@ int all_ate(t_philo *philos)
     int full_count = 0;
     while (i < philos->shared->number_philos)
     {
-        pthread_mutex_lock(philos[i].full_mutex);
+        pthread_mutex_lock(&philos[i].full_mutex);
         if (philos[i].full)
             full_count++;
         i++;
-        pthread_mutex_unlock(philos[i].full_mutex);
+        pthread_mutex_unlock(&philos[i].full_mutex);
     }
 
     return (full_count == philos->shared->number_philos);
 }
 
-int monitor(void *arg)
+void *monitor(void *arg)
 {
     t_philo *philo;
-    unsigned long long time;
-    int index;
 
-    index = 0;
     philo = (t_philo *)arg;
     while (1)
     {
@@ -55,5 +52,5 @@ int monitor(void *arg)
             return (0);
         usleep(1000);
     }
-    return (0);
+    return (NULL);
 }

@@ -4,7 +4,7 @@ LDFLAGS = -pthread
 
 NAME = philo
 
-SRCS = main.c routine.c eating.c sleep.c stop.c init.c cleanup.c utils.c
+SRCS = big_meower.c monitor.c philo.c routine.c smol_kind.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -13,16 +13,16 @@ HEADER = philo.h
 all: $(NAME)
 
 $(NAME): $(OBJS)
-    $(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJS)
 
 %.o: %.c $(HEADER)
-    $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-    rm -f $(OBJS)
+	rm -f $(OBJS)
 
 fclean: clean
-    rm -f $(NAME)
+	rm -f $(NAME)
 
 re: fclean all
 

@@ -26,19 +26,19 @@ void odd_eating(t_philo *philo)
     if (philo->id != philo->shared->number_philos - 1)
     {
         philo->shared->forks[philo->id + 1] = 0;
-        pthread_mutex_unlock(philo->shared->fork_mutexes[philo->id + 1]);
+        pthread_mutex_unlock(&philo->shared->fork_mutexes[philo->id + 1]);
     }
     else
     {
         philo->shared->forks[0] = 0;
-        pthread_mutex_unlock(philo->shared->fork_mutexes[0]);
+        pthread_mutex_unlock(&philo->shared->fork_mutexes[0]);
     }
     philo->shared->forks[philo->id] = 0;
-    pthread_mutex_unlock(philo->shared->fork_mutexes[philo->id]);
+    pthread_mutex_unlock(&philo->shared->fork_mutexes[philo->id]);
 }
 
 
-int     routine(void *arg)
+void     *routine(void *arg)
 {
     t_philo *philo;
     int     num_eating;
@@ -65,5 +65,5 @@ int     routine(void *arg)
     pthread_mutex_lock(&philo->full_mutex);
     philo->full = 1;
     pthread_mutex_unlock(&philo->full_mutex);
-    return (0);
+    return (NULL);
 }

@@ -26,7 +26,7 @@ int process(t_philo *philo)
     }
     return (0);
 }
-int init_philos(char **argv, t_philo **philos, t_shared *shared)
+int init_philos(t_philo **philos, t_shared *shared)
 {
     int index;
 
@@ -88,9 +88,9 @@ int main(int argc, char **argv)
         return (-1);
     }
     if (init_shared(argv, &shared) != 0)
-        return (cleanup(philosoph, &shared));
-    if (init_philos(argv, &philosoph, &shared) != 0)
-        return (cleanup(philosoph, &shared));
+        return (cleanup(&shared, philosoph));
+    if (init_philos(&philosoph, &shared) != 0)
+        return (cleanup(&shared, philosoph));
     process(philosoph);
-    return (cleanup(philosoph, &shared));
+    return (cleanup(&shared, philosoph));
 }
