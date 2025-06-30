@@ -42,14 +42,17 @@ int process(t_philo *philo);
 void even_eating(t_philo *philo);
 void odd_eating(t_philo *philo);
 void *routine(void *arg);
-int init_shared(char **argv, t_shared *shared);
+int init_shared(int argc, char **argv, t_shared *shared);
 int init_philos(t_philo **philos, t_shared *shared);
 int cleanup(t_shared *shared, t_philo *philos);
 
 void grab_left_fork(t_philo *philo);
 void grab_right_fork(t_philo *philo);
-void ft_sleep(t_philo *philo, char *type);
+void ft_sleep(t_philo *philo, char type);
 unsigned long long get_time_ms(void);
+int is_digit(char c);
+int is_space(char c);
+int ft_atoi(const char *str);
 
 #endif // PHILO_H
 

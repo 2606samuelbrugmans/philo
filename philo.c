@@ -5,6 +5,13 @@ int process(t_philo *philo)
 
     index = 0;
     philo->shared->start_time = get_time_ms();
+    // Initialize all last_ate_time after start_time is set
+    while (index < philo->shared->number_philos)
+    {
+        philo[index].last_ate_time = philo->shared->start_time;
+        index++;
+    }
+    index = 0;
     while (index < philo->shared->number_philos)
     {
         if (pthread_create(&philo[index].thread, NULL, routine, &philo[index]) != 0)
@@ -47,20 +54,21 @@ int init_philos(t_philo **philos, t_shared *shared)
     return (0);
 
 }
-int init_shared(char **argv, t_shared *shared)
+int init_shared(int argc, char **argv, t_shared *shared)
 {
     int index;
 
     index = 0;
-    shared->number_philos = ft_atoi(argv[1]);;
+    shared->number_philos = ft_atoi(argv[1]);
     shared->time_to_die = ft_atoi(argv[2]);
     shared->time_to_eat = ft_atoi(argv[3]);
     shared->time_to_sleep = ft_atoi(argv[4]);
     shared->stop = 0;
-    if (argv[5] != NULL)
+    if (argc == 6)
         shared->eat_number = ft_atoi(argv[5]);
     else
         shared->eat_number = -1;
+
     shared->forks = malloc(sizeof(int) * shared->number_philos);
     if (!shared->forks)
         return (1);
@@ -82,15 +90,16 @@ int main(int argc, char **argv)
    t_philo *philosoph;
    t_shared shared;
 
-    if (argc != 4 && argc != 5)
+    if (argc != 5 && argc != 6)
     {
-        write(2, "number of arguments is inadequate", 14);
+        write(2, "number of arguments is inadequate\n", 35);
         return (-1);
     }
-    if (init_shared(argv, &shared) != 0)
+    if (init_shared(argc, argv, &shared) != 0)
         return (cleanup(&shared, philosoph));
     if (init_philos(&philosoph, &shared) != 0)
         return (cleanup(&shared, philosoph));
+    printf("%d",shared.eat_number);
     process(philosoph);
     return (cleanup(&shared, philosoph));
 }
