@@ -21,6 +21,8 @@ void grab_right_fork(t_philo *philo)
 }
 void ft_sleep(t_philo *philo, char type)
 {
+    if (should_stop(philo) == 1)
+        return;
     philo->current_time = get_time_ms();
     philo->current_time -= philo->shared->start_time;
     if (type == 'e')
