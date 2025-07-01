@@ -87,8 +87,8 @@ int init_shared(int argc, char **argv, t_shared *shared)
 
 int main(int argc, char **argv)
 {
-   t_philo *philosoph;
-   t_shared shared;
+    t_philo *philosoph;
+    t_shared shared;
 
     if (argc != 5 && argc != 6)
     {
@@ -99,7 +99,9 @@ int main(int argc, char **argv)
         return (cleanup(&shared, philosoph));
     if (init_philos(&philosoph, &shared) != 0)
         return (cleanup(&shared, philosoph));
-    printf("%d",shared.eat_number);
-    process(philosoph);
+    if (is_valid(argc, &shared) == 0)
+        process(philosoph);
+    else 
+        write(2, "args cant be negative numbers\n", 31);
     return (cleanup(&shared, philosoph));
 }

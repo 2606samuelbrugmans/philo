@@ -24,6 +24,7 @@ typedef struct s_shared {
 
 typedef struct s_philo {
     int id;
+    int right;
     pthread_t thread;
     pthread_mutex_t     full_mutex;
     pthread_mutex_t last_ate_protec;
@@ -35,6 +36,8 @@ typedef struct s_philo {
 
 int should_stop(t_philo *philo);
 int anybody_die(t_philo *philos);
+int is_valid(int argc, t_shared *shared);
+int who_right(t_philo *philo);
 
 int all_ate(t_philo *philos);
 void *monitor(void *arg);
@@ -47,7 +50,7 @@ int init_philos(t_philo **philos, t_shared *shared);
 int cleanup(t_shared *shared, t_philo *philos);
 
 void grab_left_fork(t_philo *philo);
-void grab_right_fork(t_philo *philo);
+void grab_right_fork(t_philo *philo, int right);
 void ft_sleep(t_philo *philo, char type);
 unsigned long long get_time_ms(void);
 int is_digit(char c);

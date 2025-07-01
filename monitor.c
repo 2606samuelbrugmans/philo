@@ -9,7 +9,7 @@ int anybody_die(t_philo *philos)
     while(index < philos->shared->number_philos)
     {
         pthread_mutex_lock(&philos[index].last_ate_protec);
-        if (time - philos[index].last_ate_time >= (unsigned long long)philos->shared->time_to_die)
+        if (time - philos[index].last_ate_time > (unsigned long long)philos->shared->time_to_die)
         {
             pthread_mutex_unlock(&philos[index].last_ate_protec);
             time -= philos->shared->start_time;
@@ -48,6 +48,7 @@ int all_ate(t_philo *philos)
 void *monitor(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
+
     while (1)
     {
         pthread_mutex_lock(&philo->shared->stop_mutex);
@@ -57,9 +58,10 @@ void *monitor(void *arg)
             break;
         }
         pthread_mutex_unlock(&philo->shared->stop_mutex);
-
+        usleep(100);
         if (anybody_die(philo) == 1)
             break;
+        usleep(100);
         if (all_ate(philo) == 1)
         {
             pthread_mutex_lock(&philo->shared->stop_mutex);
@@ -67,7 +69,7 @@ void *monitor(void *arg)
             pthread_mutex_unlock(&philo->shared->stop_mutex);
             break;
         }
-        usleep(1000); // Slightly longer sleep to reduce CPU usage
+        usleep(1000); 
     }
     return (NULL);
 }
