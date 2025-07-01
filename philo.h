@@ -56,6 +56,9 @@ unsigned long long get_time_ms(void);
 int is_digit(char c);
 int is_space(char c);
 int ft_atoi(const char *str);
+int thread_create(t_philo *philo);
+void args_create(t_shared *shared, int argc, char **argv);
+void death(t_philo *philo, unsigned long long time, int index);
 
-#endif // PHILO_H
+#endif 
 

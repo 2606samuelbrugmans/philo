@@ -12,49 +12,63 @@
 
 #include "philo.h"
 
-int cleanup(t_shared *shared, t_philo *philos)
+int	cleanup(t_shared *shared, t_philo *philos)
 {
-    int i;
+	int i;
 
-    if (shared->number_philos > 0 && philos)
-    {
-        i = 0;
-        while (i < shared->number_philos)
-        {
-            pthread_mutex_destroy(&philos[i].last_ate_protec);
-            pthread_mutex_destroy(&philos[i].full_mutex);
-            if (shared->fork_mutexes)
-                pthread_mutex_destroy(&shared->fork_mutexes[i]);
-            i++;
-        }
-    }
-    if (shared->fork_mutexes)
-        free(shared->fork_mutexes);
-    if (shared->forks)
-        free(shared->forks);
-    if (philos)
-        free(philos);
-    pthread_mutex_destroy(&shared->stop_mutex);
-    return (0);
+	if (shared->number_philos > 0 && philos)
+	{
+		i = 0;
+		while (i < shared->number_philos)
+		{
+			pthread_mutex_destroy(&philos[i].last_ate_protec);
+			pthread_mutex_destroy(&philos[i].full_mutex);
+			if (shared->fork_mutexes)
+				pthread_mutex_destroy(&shared->fork_mutexes[i]);
+			i++;
+		}
+	}
+	if (shared->fork_mutexes)
+		free(shared->fork_mutexes);
+	if (shared->forks)
+		free(shared->forks);
+	if (philos)
+		free(philos);
+	pthread_mutex_destroy(&shared->stop_mutex);
+	return (0);
 }
-int is_valid(int argc,t_shared *shared)
+
+int	is_valid(int argc, t_shared *shared)
 {
-    if (shared->eat_number < 0 && argc == 6)
-        return (-1);
-    if (shared->time_to_die < 0)
-        return (-1);
-    if (shared->time_to_sleep < 0)
-        return (-1);
-    if (shared->time_to_eat < 0 )
-        return (-1);
-    return (0);
+	if (shared->eat_number < 0 && argc == 6)
+		return (-1);
+	if (shared->time_to_die < 0)
+		return (-1);
+	if (shared->time_to_sleep < 0)
+		return (-1);
+	if (shared->time_to_eat < 0)
+		return (-1);
+	return (0);
 }
+
 int who_right(t_philo *philo)
 {
-    int right;
+	int right;
 
-    right = philo->id + 1;
-    if (philo->id == philo->shared->number_philos - 1)
-        right = 0;
-    return (right);
+	right = philo->id + 1;
+	if (philo->id == philo->shared->number_philos - 1)
+		right = 0;
+	return (right);
+}
+void args_create(t_shared *shared, int argc, char **argv)
+{
+    shared->number_philos = ft_atoi(argv[1]);
+    shared->time_to_die = ft_atoi(argv[2]);
+    shared->time_to_eat = ft_atoi(argv[3]);
+    shared->time_to_sleep = ft_atoi(argv[4]);
+    shared->stop = 0;
+    if (argc == 6)
+        shared->eat_number = ft_atoi(argv[5]);
+    else
+        shared->eat_number = -1;
 }

@@ -1,29 +1,41 @@
 #include "philo.h"
+
+
+int	thread_create(t_philo *philo)
+{
+	int index;
+
+	index = 0;
+	while (index < philo->shared->number_philos)
+	{
+		if (pthread_create(&philo[index].thread, NULL, routine, &philo[index]) != 0)
+		{
+			write(2, "failed to create a thread\n", 26);
+			while (--index >= 0)
+				pthread_join(philo[index].thread, NULL);
+			return (1);
+		}
+		index++;
+	}
+	if (pthread_create(&philo->shared->monitor, NULL, monitor, philo) != 0)
+		write(2, "failed to create a thread\n", 26);
+	return (0);
+}
+
 int process(t_philo *philo)
 {
     int index;
 
     index = 0;
     philo->shared->start_time = get_time_ms();
-    // Initialize all last_ate_time after start_time is set
     while (index < philo->shared->number_philos)
     {
         philo[index].last_ate_time = philo->shared->start_time;
         index++;
     }
-    index = 0;
-    while (index < philo->shared->number_philos)
-    {
-        if (pthread_create(&philo[index].thread, NULL, routine, &philo[index]) != 0)
-        {
-            write(2, "failed to create a thread\n", 26);
-            while (--index >= 0)
-                pthread_join(philo[index].thread, NULL);
-        }
-        index++;
-    }
-    if (pthread_create(&philo->shared->monitor, NULL, monitor, philo) != 0)
-        write(2, "failed to create a thread\n", 26);
+    if (thread_create(philo) != 0)
+        return (1);
+    usleep(100); 
     pthread_join(philo->shared->monitor, NULL);
     index = 0;
     while (index < philo->shared->number_philos)
@@ -33,42 +45,33 @@ int process(t_philo *philo)
     }
     return (0);
 }
-int init_philos(t_philo **philos, t_shared *shared)
+int	init_philos(t_philo **philos, t_shared *shared)
 {
-    int index;
+	int index;
 
-    index = 0;
-    *philos = malloc(sizeof(t_philo) * shared->number_philos);
-    if (!*philos)
-        return (1);
-    while (index < shared->number_philos)
-    {
-        (*philos)[index].id = index;
-        (*philos)[index].shared = shared;
-        (*philos)[index].full = 0;
-        (*philos)[index].last_ate_time = get_time_ms();
-        pthread_mutex_init(&(*philos)[index].last_ate_protec, NULL);
-        pthread_mutex_init(&(*philos)[index].full_mutex, NULL);
-        index++;
-    }
-    return (0);
-
+	index = 0;
+	*philos = malloc(sizeof(t_philo) * shared->number_philos);
+	if (!*philos)
+		return (1);
+	while (index < shared->number_philos)
+	{
+		(*philos)[index].id = index;
+		(*philos)[index].shared = shared;
+		(*philos)[index].full = 0;
+		(*philos)[index].last_ate_time = get_time_ms();
+		pthread_mutex_init(&(*philos)[index].last_ate_protec, NULL);
+		pthread_mutex_init(&(*philos)[index].full_mutex, NULL);
+		index++;
+	}
+	return (0);
 }
+
 int init_shared(int argc, char **argv, t_shared *shared)
 {
     int index;
 
     index = 0;
-    shared->number_philos = ft_atoi(argv[1]);
-    shared->time_to_die = ft_atoi(argv[2]);
-    shared->time_to_eat = ft_atoi(argv[3]);
-    shared->time_to_sleep = ft_atoi(argv[4]);
-    shared->stop = 0;
-    if (argc == 6)
-        shared->eat_number = ft_atoi(argv[5]);
-    else
-        shared->eat_number = -1;
-
+    args_create(shared, argc, argv);
     shared->forks = malloc(sizeof(int) * shared->number_philos);
     if (!shared->forks)
         return (1);

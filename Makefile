@@ -4,7 +4,7 @@ LDFLAGS = -pthread
 
 NAME = philo
 
-SRCS = big_meower.c monitor.c philo.c routine.c smol_kind.c basic.c
+SRCS = big_meower.c monitor.c philo.c routine.c smol_kind.c basic.c little_helper.c \
 
 OBJS = $(SRCS:.c=.o)
 
