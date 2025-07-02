@@ -48,6 +48,8 @@ int	is_valid(int argc, t_shared *shared)
 		return (-1);
 	if (shared->time_to_eat < 0)
 		return (-1);
+	if (shared->number_philos <=0)
+		return (-1);
 	return (0);
 }
 

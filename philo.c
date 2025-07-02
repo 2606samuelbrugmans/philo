@@ -105,6 +105,6 @@ int main(int argc, char **argv)
     if (is_valid(argc, &shared) == 0)
         process(philosoph);
     else 
-        write(2, "args cant be negative numbers\n", 31);
+        write(2, "args are invalid\n", 18);
     return (cleanup(&shared, philosoph));
 }
