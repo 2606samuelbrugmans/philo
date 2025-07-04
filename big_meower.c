@@ -53,7 +53,7 @@ int	is_valid(int argc, t_shared *shared)
 	return (0);
 }
 
-int who_right(t_philo *philo)
+int	who_right(t_philo *philo)
 {
 	int right;
 

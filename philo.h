@@ -38,6 +38,7 @@ int should_stop(t_philo *philo);
 int anybody_die(t_philo *philos);
 int is_valid(int argc, t_shared *shared);
 int who_right(t_philo *philo);
+void	sleep_fair(t_philo *philo);
 
 int all_ate(t_philo *philos);
 void *monitor(void *arg);

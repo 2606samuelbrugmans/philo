@@ -9,6 +9,15 @@ int	anybody_die(t_philo *philos)
 	index = 0;
 	while (index < philos->shared->number_philos)
 	{
+		pthread_mutex_lock(&philos[index].full_mutex);
+		if (philos[index].full)
+		{
+			pthread_mutex_unlock(&philos[index].full_mutex);
+			index++;
+			continue;
+		}
+		pthread_mutex_unlock(&philos[index].full_mutex);
+
 		pthread_mutex_lock(&philos[index].last_ate_protec);
 		if (time - philos[index].last_ate_time > (unsigned long long)philos->shared->time_to_die)
 			return (death(philos, time, index), 1);
@@ -42,10 +51,10 @@ void *monitor(void *arg)
 
     while (1)
     {
-        usleep(300);
+        usleep(500);
         if (anybody_die(philo) == 1)
             break;
-        usleep(200);
+        usleep(1000);
         if (all_ate(philo) == 1)
         {
             pthread_mutex_lock(&philo->shared->stop_mutex);
@@ -53,7 +62,10 @@ void *monitor(void *arg)
             pthread_mutex_unlock(&philo->shared->stop_mutex);
             break;
         }
-        usleep(500); 
+		usleep(1500);
+		if (anybody_die(philo) == 1)
+            break;
+        usleep(1200); 
     }
     return (NULL);
 }

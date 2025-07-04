@@ -36,7 +36,7 @@ void	ft_sleep(t_philo *philo, char type)
 	if (type == 't')
 	{
 		printf("%llu philo %d is thinking\n", current_time, philo->id);
-		usleep(500);
+		sleep_fair(philo);
 	}
 }
 
