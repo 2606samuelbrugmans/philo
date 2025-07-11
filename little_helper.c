@@ -12,7 +12,7 @@ void death(t_philo *philo, unsigned long long time, int index)
 void	sleep_fair(t_philo *philo)
 {
 	if (philo->shared->number_philos % 2 == 1 && philo->shared->time_to_eat 
-	> philo->shared->time_to_sleep)
+	== philo->shared->time_to_sleep)
 		usleep((1000 * philo->shared->time_to_eat
 			- philo->shared->time_to_sleep) + 500);
 }
